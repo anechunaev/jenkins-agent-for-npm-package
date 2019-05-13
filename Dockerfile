@@ -32,5 +32,4 @@ RUN apk add git unzip; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
-	&& printf "sonar.host.url=${SONAR_HOST}\nsonar.login=${SONAR_TOKEN}" >> /tmp/sonar/sonar-scanner-${SONAR_CLI_VERSION}-linux/conf/sonar-scanner.properties; \
-	printf "registry=${NPM_REGISTRY}\n_authToken=${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
+	&& printf "registry=\${NPM_REGISTRY}\n_authToken=\${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
