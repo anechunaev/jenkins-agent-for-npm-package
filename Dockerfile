@@ -28,8 +28,17 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # Dependencies setup
 # - Install git because npm module might be defined with git url:
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
-RUN apk add git unzip; \
+# - Install glibc for Alpine (sonar-scaner dependency of java)
+#   https://github.com/bellingard/sonar-scanner-npm/issues/59
+RUN apk add git unzip ca-certificates wget; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
-	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
+	$( \
+		wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
+		& wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+		& wget -q -P /tmp https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk \
+	) \
+	&& apk add /tmp/glibc-2.29-r0.apk \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
 	&& printf "registry=\${NPM_REGISTRY}\n_authToken=\${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
+
+CMD ["sh"]
