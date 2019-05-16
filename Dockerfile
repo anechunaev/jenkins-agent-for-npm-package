@@ -40,7 +40,7 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
 # - Install glibc for Alpine (sonar-scaner dependency of java)
 #   https://github.com/bellingard/sonar-scanner-npm/issues/59
-RUN apk add git unzip ca-certificates wget \
+RUN apk add git unzip ca-certificates wget openssh \
 	& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	$( \
