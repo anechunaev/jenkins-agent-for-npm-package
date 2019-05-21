@@ -1,4 +1,4 @@
-FROM node:11-alpine
+FROM node:12-alpine
 
 # NPM options
 ARG NPM_TOKEN
@@ -37,7 +37,7 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # - Install dependencies for Cypress
 #   https://docs.cypress.io/guides/guides/continuous-integration.html#Advanced-setup
 RUN apk update && apk add --no-cache git unzip ca-certificates wget openssh xvfb gtk+3.0 libnotify-dev gconf nss libxscrnsaver alsa-lib \
-	& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
+	&& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	$( \
 		wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
