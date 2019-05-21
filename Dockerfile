@@ -1,11 +1,5 @@
 FROM node:11-alpine
 
-# Git options
-ARG GIT_AUTHOR_NAME='Unknown'
-ARG GIT_AUTHOR_EMAIL='unknown@localhost'
-ARG GIT_COMMITTER_NAME='Unknown'
-ARG GIT_COMMITTER_EMAIL='unknown@localhost'
-
 # NPM options
 ARG NPM_TOKEN
 ARG NPM_REGISTRY=https://registry.npmjs.org
@@ -38,9 +32,11 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # Dependencies setup
 # - Install git because npm module might be defined with git url:
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
-# - Install glibc for Alpine (sonar-scaner dependency of java)
+# - Install glibc for Alpine (sonar-scanner dependency of java)
 #   https://github.com/bellingard/sonar-scanner-npm/issues/59
-RUN apk add git unzip ca-certificates wget openssh \
+# - Install dependencies for Cypress
+#   https://docs.cypress.io/guides/guides/continuous-integration.html#Advanced-setup
+RUN apk update && apk add --no-cache git unzip ca-certificates wget openssh xvfb gtk+3.0 libnotify-dev gconf nss libxscrnsaver alsa-lib \
 	& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	$( \
