@@ -1,4 +1,4 @@
-FROM cypress/base:12.1.0
+FROM cypress/base:10
 
 # NPM options
 ARG NPM_TOKEN
@@ -32,11 +32,11 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # Dependencies setup
 # - Install git because npm module might be defined with git url:
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
-RUN apt-get install -y git unzip wget \
+RUN apt-get install -y git unzip wget dbus \
 	&& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
 	&& printf "registry=\${NPM_REGISTRY}\n_authToken=\${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
 
-CMD ["sh"]
+CMD ["/bin/bash"]
