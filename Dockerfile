@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM cypress/base:12.1.0
 
 # NPM options
 ARG NPM_TOKEN
@@ -32,19 +32,10 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # Dependencies setup
 # - Install git because npm module might be defined with git url:
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
-# - Install glibc for Alpine (sonar-scanner dependency of java)
-#   https://github.com/bellingard/sonar-scanner-npm/issues/59
-# - Install dependencies for Cypress
-#   https://docs.cypress.io/guides/guides/continuous-integration.html#Advanced-setup
-RUN apk update && apk add --no-cache git unzip ca-certificates wget openssh xvfb gtk+3.0 libnotify-dev gconf nss libxscrnsaver alsa-lib \
+RUN apt-get install -y git unzip wget \
 	&& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
-	$( \
-		wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
-		& wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-		& wget -q -P /tmp https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk \
-	) \
-	&& apk add /tmp/glibc-2.29-r0.apk \
+	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
 	&& printf "registry=\${NPM_REGISTRY}\n_authToken=\${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
 
