@@ -1,4 +1,4 @@
-FROM cypress/base:10
+FROM cypress/browsers:chrome69
 
 # NPM options
 ARG NPM_TOKEN
@@ -28,8 +28,11 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 # Dependencies setup
 # - Install git because npm module might be defined with git url:
 #   https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
-RUN apt-get install -y git unzip wget dbus \
+RUN apt-get install -y git unzip wget dbus libgles2-mesa libegl1-mesa \
 	&& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
+	mkdir /var/run/dbus && chmod 777 /var/run/dbus; \
+	mkdir -p /var/lib/jenkins/.config && chmod 777 /var/lib/jenkins/.config; \
+	mkdir /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && chown root /tmp/.X11-unix/; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
