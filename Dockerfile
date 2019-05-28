@@ -31,7 +31,8 @@ ENV NPM_TOKEN=$NPM_TOKEN \
 RUN apt-get install -y git unzip wget dbus libgles2-mesa libegl1-mesa \
 	&& printf "[user]\n\temail=${GIT_AUTHOR_EMAIL}\n\tname=${GIT_AUTHOR_NAME}" >> /.gitconfig; \
 	mkdir /var/run/dbus && chmod 777 /var/run/dbus; \
-	mkdir -p /var/lib/jenkins/.config && chmod 777 /var/lib/jenkins/.config; \
+	mkdir -p /var/lib/jenkins && chmod 777 /var/lib/jenkins; \
+	mkdir /var/lib/jenkins/.config && chmod 777 /var/lib/jenkins/.config; \
 	mkdir /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && chown root /tmp/.X11-unix/; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
 	touch ${NPM_CONFIG_USERCONFIG} && chmod 777 ${NPM_CONFIG_USERCONFIG}; \
