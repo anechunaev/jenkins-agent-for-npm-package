@@ -34,8 +34,9 @@ RUN apt-get install -y git unzip wget dbus libgles2-mesa libegl1-mesa \
 	mkdir -p /var/lib/jenkins/.config && chmod 777 /var/lib/jenkins/.config; \
 	mkdir /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && chown root /tmp/.X11-unix/; \
 	mkdir -p /tmp/npmcache && mkdir -p /tmp/sonar && chmod -R 777 /tmp/npmcache && chmod -R 777 /tmp/sonar; \
+	touch ${NPM_CONFIG_USERCONFIG} && chmod 777 ${NPM_CONFIG_USERCONFIG}; \
 	wget -q -P /tmp/sonar https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip \
 	&& unzip -q /tmp/sonar/sonar-scanner-cli-${SONAR_CLI_VERSION}-linux.zip -d /tmp/sonar \
-	&& printf "registry=\${NPM_REGISTRY}\n_authToken=\${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
+	&& printf "registry=${NPM_REGISTRY}\n_authToken=${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
 
 CMD ["/bin/bash"]
